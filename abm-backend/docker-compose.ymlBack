@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./src
+    command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    volumes:
+      - ./src/:/usr/src/app/
+    ports:
+      - 8002:8000
+    environment:
+      - DATABASE_URL=postgresql://postgres:@db/postgres
+  db:
+    image: docker.io/bitnami/postgresql:14
+    ports:
+      - 5432:5432
+    volumes:
+      - 'postgresql_data:/bitnami/postgresql'
+    environment:
+      - 'ALLOW_EMPTY_PASSWORD=yes'
+
+volumes:
+  postgresql_data:
+    driver: local
